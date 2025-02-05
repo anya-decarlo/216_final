@@ -7,7 +7,7 @@ def encrypt_for_their_method(message, key, shape=(8, 8)):
         np.random.seed(key_bytes)
     except ValueError:
         # If the seed is too large, their code won't work with this key
-        print("Warning: This key will not work with the given decryption method")
+        print(f"Warning: Key '{key}' generates seed {key_bytes} which is too large")
         return None
         
     # Generate the same random array their decryption will use
@@ -22,16 +22,22 @@ def encrypt_for_their_method(message, key, shape=(8, 8)):
     encrypted = message_array ^ random_array
     return encrypted
 
-# Try to create array that will decrypt to "Soman"
+# Try different short keys until we find one that works
 message = "Soman"
-key = "secret"
+test_keys = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"]
 
-# Generate the array
-modified_array = encrypt_for_their_method(message, key)
-
-if modified_array is not None:
-    print("Array that will decrypt to 'Soman':")
-    print(modified_array)
-else:
-    print("The key 'secret' will not work with their decryption method.")
-    print("We need to use a different key that generates a valid seed.")
+for key in test_keys:
+    print(f"\nTrying key: '{key}'")
+    key_bytes = sum(ord(c) << (8 * i) for i, c in enumerate(key))
+    print(f"Seed value: {key_bytes}")
+    
+    if key_bytes < 2**32:
+        modified_array = encrypt_for_their_method(message, key)
+        print("This key will work! Here's the array:")
+        print(modified_array)
+        print("\nTo decrypt 'Soman', use:")
+        print(f"key = '{key}'")
+        print("message_length = 5")
+        break
+    else:
+        print("Seed too large")
