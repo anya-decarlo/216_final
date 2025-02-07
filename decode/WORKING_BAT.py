@@ -3,14 +3,32 @@ import sys
 import os
 
 def create_array_for_claude(message, key='a'):
+    print(f"Original message: {message}")
     key_bytes = sum(ord(c) << (8 * i) for i, c in enumerate(key))
     np.random.seed(key_bytes)
     msg_len = len(message)
     size = max(8, int(np.ceil(np.sqrt(msg_len))))
-    random_nums = np.random.randint(0, 256, size=len(message))
     array = []
-    for i, char in enumerate(message):
-        array.append(ord(char) ^ random_nums[i])
+    random_nums = []
+    
+    for char in message:
+        char_ord = ord(char)
+        while True:
+            rand_num = np.random.randint(0, 256)
+            xor_result = char_ord ^ rand_num
+            if 32 <= xor_result <= 126:
+                print(f"\nXOR Calculation for '{char}':")
+                print("Column:  7 6 5 4  3 2 1 0")
+                print(f"First:   {bin(char_ord)[2:].zfill(8)}")
+                print(f"Second:  {bin(rand_num)[2:].zfill(8)}")
+                print("         ---------------")
+                print(f"Result:  {bin(xor_result)[2:].zfill(8)} = {xor_result} ({chr(xor_result)})")
+                print(f"Verify:  {xor_result} XOR {rand_num} = {xor_result ^ rand_num} ({chr(xor_result ^ rand_num)})")
+                
+                array.append(xor_result)
+                random_nums.append(rand_num)
+                break
+    
     return array, random_nums
 
 def generate_instructions(message):

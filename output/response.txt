@@ -1,0 +1,6 @@
+Here's what Claude should do:
+1. Solved the sequence: 
+2. Generated response (example haiku):
+   Fingers dance swiftly
+   Through logic's winding pathways
+   Code blooms like spring flowers
